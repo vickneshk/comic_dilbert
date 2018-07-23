@@ -29,7 +29,7 @@ public class App
 {
     public static void main( String[] args )
     {
-    	--
+    	
     	System.setProperty("webdriver.gecko.driver","D:\\Selenium\\Software\\selenium-java-3.12.0\\geckodriver.exe");  
         WebDriver driver = new FirefoxDriver();
         try{
