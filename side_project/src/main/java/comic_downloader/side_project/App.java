@@ -31,7 +31,7 @@ public class App
     public static void main( String[] args )
     {
     	
-    	System.setProperty("webdriver.gecko.driver","C:\\Users\\vicky\\Documents\\Selenium\\geckodriver.exe");  
+    	System.setProperty("webdriver.gecko.driver","D:\\Selenium\\Software\\geckodriver-v0.20.1-win64\\geckodriver.exe");  
         WebDriver driver = new FirefoxDriver();
         try{
         driver.get("http://dilbert.com/strip/1994-05-22");
@@ -42,7 +42,7 @@ public class App
         if(driver.findElement(By.xpath("//img[@class='img-responsive img-comic']")).isDisplayed())
         {
         	WebElement element = driver.findElement(By.xpath("//img[@class='img-responsive img-comic']"));
-            
+        	            
 //            String src = image.getAttribute("src");
 //        System.out.println(src);
 //        URL imageURL = new URL(src);
@@ -62,13 +62,24 @@ public class App
            // System.out.println(height+"\t"+p.getY());
             File screen = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
             BufferedImage img = ImageIO.read(screen);
-            BufferedImage dest = img.getSubimage(p.getX(), p.getY(), width,   
-                                     height);
+            BufferedImage dest = null;
+            if(img.getSubimage(p.getX(),p.getY(), width,height) != null)
+            	{
+            	dest = img.getSubimage(p.getX(),p.getY(), width,height);
+            	}
+            else
+            {
+            	JavascriptExecutor executor = (JavascriptExecutor) driver;
+            	((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", element);
+            	Thread.sleep(500);
+            	Long value = (Long) executor.executeScript("return window.pageYOffset;");
+            	dest = img.getSubimage(p.getX(),(int) (p.getY()-value), width,height);
+            }
             ImageIO.write(dest, "png", screen);
             String numbering = null;
             numbering = driver.getCurrentUrl();
             numbering = numbering.substring(25);
-            File f = new File("C:\\Users\\vicky\\Documents\\Dilbert\\"+numbering+".jpg");
+            File f = new File("D:\\Selenium\\Dilbert\\"+numbering+".jpg");
 
             FileUtils.copyFile(screen, f);
         }
